@@ -26,8 +26,6 @@ public interface VehiculoRepository extends JpaRepository<VehiculoEntity, Long> 
     void deleteByTipo(String tipo);
     void deleteByCapacidadPasajeros(String capacidadPasajeros);
     void deleteByPrecio(Integer precio);
-
-
     void addVehiculoEntity(VehiculoRepository Vehiculo);
     void updateVehiculoEntity(VehiculoRepository Vehiculo);
 }
