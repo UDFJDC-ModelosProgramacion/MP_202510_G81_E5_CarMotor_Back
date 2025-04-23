@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class ImagenEntity {
+public class ImagenEntity extends BaseEntity {
     private String url;
     private String ancho;
     private String alto;

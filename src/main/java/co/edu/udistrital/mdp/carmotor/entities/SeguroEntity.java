@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class SeguroEntity {
+public class SeguroEntity extends BaseEntity {
     private String valorAnual;
     private String entidadAseguradora;
 }
