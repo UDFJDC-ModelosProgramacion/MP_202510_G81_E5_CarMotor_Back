@@ -11,13 +11,13 @@ import co.edu.udistrital.mdp.carmotor.entities.VehiculoEntity;
 @Repository
 public interface VehiculoRepository extends JpaRepository<VehiculoEntity, Long> {
 
-    List<VehiculoRepository> findByMarca(String marca);
-    List<VehiculoRepository> findBySerie(String serie);
-    List<VehiculoRepository> findByPlaca(String placa);
-    List<ImagenRepository> findByModelo(String modelo);
-    List<ImagenRepository> findByTipo(String tipo);
-    List<ImagenRepository> findByCapacidadPasajeros(String capacidadPasajeros);
-    List<ImagenRepository> findByPrecio(Integer precio);
+    List<VehiculoEntity> findByMarca(String marca);
+    List<VehiculoEntity> findBySerie(String serie);
+    List<VehiculoEntity> findByPlaca(String placa);
+    List<VehiculoEntity> findByModelo(String modelo);
+    List<VehiculoEntity> findByTipo(String tipo);
+    List<VehiculoEntity> findByCapacidadPasajeros(String capacidadPasajeros);
+    List<VehiculoEntity> findByPrecio(Integer precio);
 
     void deleteByMarca(String marca);
     void deleteBySerie(String serie);
@@ -26,6 +26,7 @@ public interface VehiculoRepository extends JpaRepository<VehiculoEntity, Long> 
     void deleteByTipo(String tipo);
     void deleteByCapacidadPasajeros(String capacidadPasajeros);
     void deleteByPrecio(Integer precio);
-    void addVehiculoEntity(VehiculoRepository Vehiculo);
-    void updateVehiculoEntity(VehiculoRepository Vehiculo);
+   
+
+
 }

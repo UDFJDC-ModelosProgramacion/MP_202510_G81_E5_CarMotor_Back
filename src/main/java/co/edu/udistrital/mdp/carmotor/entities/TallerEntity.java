@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class Taller extends BaseEntity {
+public class TallerEntity extends BaseEntity {
     private String direccion;
     private String numero;
     private String horario;

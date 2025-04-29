@@ -10,12 +10,11 @@ import co.edu.udistrital.mdp.carmotor.entities.SeguroEntity;
 @Repository
 public interface SeguroRepository extends JpaRepository<SeguroEntity, Long> {
     
-    List<SeguroRepository> findByValorAnual(String valorAnual);
-    List<SeguroRepository> findByEntidadAseguradora(String entidadAseguradora);
+    List<SeguroEntity> findByValorAnual(String valorAnual);
+    List<SeguroEntity> findByEntidadAseguradora(String entidadAseguradora);
 
     void deleteByValorAnual(String valorAnual);
     void deleteByEntidadAseguradora(String entidadAseguradora);
 
-    void addSeguroEntity(SeguroRepository Seguro);
-    void updateSeguroEntity(SeguroRepository Seguro);
+    
 }

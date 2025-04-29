@@ -3,19 +3,21 @@ package co.edu.udistrital.mdp.carmotor.repositories;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import co.edu.udistrital.mdp.carmotor.entities.AsesorVehiculo;
-import co.edu.udistrital.mdp.carmotor.entities.Taller;
+import co.edu.udistrital.mdp.carmotor.entities.TallerEntity;
 
-public interface TallerRepository extends JpaRepository<AsesorVehiculo, Long> {
+@Repository
+public interface TallerRepository extends JpaRepository<TallerEntity, Long> {
     
-    List<Taller>findByDireccion(String direccion);
-    List<Taller> findByHorario(String horario);
-    List<Taller> findByNumero(String numero);
+    List<TallerEntity>findByDireccion(String direccion);
+    List<TallerEntity> findByHorario(String horario);
+    List<TallerEntity> findByNumero(String numero);
+
     void deleteByDireccion(String direccion);
     void deleteByHorario(String horario);
     void deleteByNumero(String numero);
+
     void deleteById(long id);
-    void addTaller(Taller taller);
-    void updateTaller(Taller taller);
+   
 }
