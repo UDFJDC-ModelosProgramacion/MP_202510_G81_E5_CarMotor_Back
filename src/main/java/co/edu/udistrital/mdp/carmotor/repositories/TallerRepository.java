@@ -1,21 +1,32 @@
 package co.edu.udistrital.mdp.carmotor.repositories;
 
+import co.edu.udistrital.mdp.carmotor.entities.Taller;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+@Repository
+public interface TallerRepository extends JpaRepository<Taller, Long> {
 
-import co.edu.udistrital.mdp.carmotor.entities.AsesorVehiculo;
-import co.edu.udistrital.mdp.carmotor.entities.Taller;
+    // Buscar talleres por dirección exacta
+    @Query("SELECT t FROM Taller t WHERE t.direccion = ?1")
+    List<Taller> findByDireccion(String direccion);
 
-public interface TallerRepository extends JpaRepository<AsesorVehiculo, Long> {
-    
-    List<Taller>findByDireccion(String direccion);
-    List<Taller> findByHorario(String horario);
+    // Buscar talleres por número exacto
+    @Query("SELECT t FROM Taller t WHERE t.numero = ?1")
     List<Taller> findByNumero(String numero);
-    void deleteByDireccion(String direccion);
-    void deleteByHorario(String horario);
-    void deleteByNumero(String numero);
-    void deleteById(long id);
-    void addTaller(Taller taller);
-    void updateTaller(Taller taller);
+
+    // Buscar talleres cuyo horario contenga una cadena (parcial)
+    @Query("SELECT t FROM Taller t WHERE LOWER(t.horario) LIKE LOWER(CONCAT('%', ?1, '%'))")
+    List<Taller> searchByHorario(String horarioParcial);
+
+    // Contar cuántos talleres hay con un número específico
+    @Query("SELECT COUNT(t) FROM Taller t WHERE t.numero = ?1")
+    long countByNumero(String numero);
+
+    // Buscar todos los talleres con un horario exacto
+    @Query("SELECT t FROM Taller t WHERE t.horario = ?1")
+    List<Taller> findByHorarioExacto(String horario);
 }
