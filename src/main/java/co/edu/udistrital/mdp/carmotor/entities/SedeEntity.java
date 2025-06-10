@@ -19,4 +19,6 @@ public class SedeEntity extends BaseEntity{
     private String direccion;
     private String telefono;
     private String horario;
+    private boolean activa;
+    private String capacidadmaxima;
 }
