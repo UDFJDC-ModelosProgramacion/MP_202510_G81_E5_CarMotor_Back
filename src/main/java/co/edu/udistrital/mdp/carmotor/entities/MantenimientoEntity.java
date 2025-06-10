@@ -1,7 +1,7 @@
 package co.edu.udistrital.mdp.carmotor.entities;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
 import uk.co.jemos.podam.common.PodamExclude;
@@ -15,7 +15,7 @@ public class MantenimientoEntity extends BaseEntity{
     @OneToOne(mappedBy = "mantenimiento")
     private TallerEntity taller;
 
-    @OneToMany(mappedBy = "vehiculo")
+    @ManyToOne
     private VehiculoEntity vehiculo;
 
     private String fechaDeServicio;

@@ -1,19 +1,19 @@
 package co.edu.udistrital.mdp.carmotor.entities;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
 
 @Data
 @Entity
 public class ImagenEntity extends BaseEntity {
-    @OneToMany(mappedBy = "vehiculo")
+    @ManyToOne
     private VehiculoEntity vehiculo;
 
-    @OneToOne(mappedBy = "asesorVehiculo")
+    @OneToOne
     private AsesorVehiculoEntity asesorVehiculo;
 
-    @OneToOne(mappedBy = "entidadBancaria")
+    @OneToOne
     private EntidadBancariaEntity entidadBancaria;
 
     private String url;

@@ -8,11 +8,11 @@ import lombok.Data;
 @Entity
 public class EntidadBancariaEntity extends BaseEntity{
 
-    @OneToOne(mappedBy = "vehiculo")
+    @OneToOne
     private VehiculoEntity vehiculo;
 
-    @OneToOne
-    private ImagenEntity imagen;
+    @OneToOne(mappedBy = "entidadBancaria")
+    private ImagenEntity logo;
 
     private String nombre;
     private String numeroTelefonoAsesor;

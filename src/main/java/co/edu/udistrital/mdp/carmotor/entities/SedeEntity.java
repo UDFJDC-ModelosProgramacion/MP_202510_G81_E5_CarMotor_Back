@@ -3,14 +3,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 import uk.co.jemos.podam.common.PodamExclude;
+import java.util.List;
 
 @Data
 @Entity
 public class SedeEntity extends BaseEntity{
     @PodamExclude
-    @OneToMany
-    private VehiculoEntity vehiculo;
-    private AsesorVehiculoEntity asesorVehiculo;
+
+    @OneToMany(mappedBy = "sede")
+    private List<VehiculoEntity> vehiculos;
+    @OneToMany(mappedBy = "sede")
+    private List<AsesorVehiculoEntity> asesores;
 
     private String nombre;
     private String direccion;
