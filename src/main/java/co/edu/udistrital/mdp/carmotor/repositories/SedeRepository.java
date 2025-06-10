@@ -16,8 +16,8 @@ public interface SedeRepository extends JpaRepository<SedeEntity, Long>{
     List<SedeEntity> findByDireccion(String direccion);
     List<SedeEntity> findByTelefono(String telefono);
     List<SedeEntity> findByHorario(String horario);
-    List<SedeEntity> findByActiva(String activa);
-    List<SedeEntity> findByCapacidadMaxima(String capacidadmaxima);
+    List<SedeEntity> findByActiva(Boolean activa);
+    List<SedeEntity> findByCapacidadMaxima(String capacidadMaxima);
 
     void deleteByNombre(String nombre);
     void deleteByDireccion(String direccion);

@@ -65,7 +65,7 @@ public class SedeService {
         existente.setNombre(sede.getNombre());
         existente.setDireccion(sede.getDireccion());
         existente.setActiva(sede.isActiva());
-        existente.setCapacidadmaxima(sede.getCapacidadmaxima());
+        existente.setCapacidadMaxima(sede.getCapacidadMaxima());
         existente.setHorario(sede.getHorario());
 
         return sedeRepository.save(existente);
