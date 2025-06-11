@@ -1,11 +1,13 @@
 package co.edu.udistrital.mdp.carmotor.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import co.edu.udistrital.mdp.carmotor.dto.EntidadBancariaDTO;
 import co.edu.udistrital.mdp.carmotor.entities.EntidadBancariaEntity;
 import co.edu.udistrital.mdp.carmotor.repositories.EntidadBancariaRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -17,80 +19,63 @@ public class EntidadBancariaService {
     @Autowired
     private EntidadBancariaRepository entidadBancariaRepository;
 
-    /**
-     * Crea una nueva entidad bancaria.
-     */
-    public EntidadBancariaEntity createEntidad(EntidadBancariaEntity entidad) {
-        return entidadBancariaRepository.save(entidad);
+    public EntidadBancariaDTO createEntidad(EntidadBancariaDTO dto) {
+        EntidadBancariaEntity entity = EntidadBancariaDTO.toEntity(dto);
+        return EntidadBancariaDTO.toDTO(entidadBancariaRepository.save(entity));
     }
 
-    /**
-     * Obtiene todas las entidades bancarias.
-     */
-    public List<EntidadBancariaEntity> getEntidades() {
-        return entidadBancariaRepository.findAll();
+    public List<EntidadBancariaDTO> getEntidades() {
+        return entidadBancariaRepository.findAll()
+                .stream()
+                .map(EntidadBancariaDTO::toDTO)
+                .collect(Collectors.toList());
     }
 
-    /**
-     * Obtiene una entidad bancaria por su ID.
-     */
-    public EntidadBancariaEntity getEntidad(Long id) {
+    public EntidadBancariaDTO getEntidad(Long id) {
         return entidadBancariaRepository.findById(id)
+                .map(EntidadBancariaDTO::toDTO)
                 .orElseThrow(() -> new IllegalArgumentException("Entidad bancaria no encontrada con ID: " + id));
     }
 
-    /**
-     * Actualiza los datos de una entidad bancaria.
-     */
-    public EntidadBancariaEntity updateEntidad(Long id, EntidadBancariaEntity entidad) {
-        EntidadBancariaEntity existente = getEntidad(id);
-        existente.setNombre(entidad.getNombre());
-        existente.setNumeroTelefonoAsesor(entidad.getNumeroTelefonoAsesor());
-        existente.setVehiculo(entidad.getVehiculo());
-        return entidadBancariaRepository.save(existente);
+    public EntidadBancariaDTO updateEntidad(Long id, EntidadBancariaDTO dto) {
+        EntidadBancariaEntity existente = entidadBancariaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Entidad bancaria no encontrada con ID: " + id));
+        existente.setNombre(dto.getNombre());
+        existente.setNumeroTelefonoAsesor(dto.getNumeroTelefonoAsesor());
+        // Actualiza otros campos según tu DTO
+        return EntidadBancariaDTO.toDTO(entidadBancariaRepository.save(existente));
     }
 
-    /**
-     * Elimina una entidad bancaria por su ID.
-     */
     public void deleteEntidad(Long id) {
-        EntidadBancariaEntity entidad = getEntidad(id);
+        EntidadBancariaEntity entidad = entidadBancariaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Entidad bancaria no encontrada con ID: " + id));
         entidadBancariaRepository.delete(entidad);
     }
 
-    /**
-     * Busca entidades bancarias por nombre.
-     */
-    public List<EntidadBancariaEntity> findByNombre(String nombre) {
-        return entidadBancariaRepository.findByNombre(nombre);
+    public List<EntidadBancariaDTO> findByNombre(String nombre) {
+        return entidadBancariaRepository.findByNombre(nombre)
+                .stream()
+                .map(EntidadBancariaDTO::toDTO)
+                .collect(Collectors.toList());
     }
 
-    /**
-     * Busca entidades bancarias por número de teléfono del asesor.
-     */
-    public List<EntidadBancariaEntity> findByNumeroTelefonoAsesor(String numeroTelefonoAsesor) {
-        return entidadBancariaRepository.findByNumeroTelefonoAsesor(numeroTelefonoAsesor);
+    public List<EntidadBancariaDTO> findByNumeroTelefonoAsesor(String numeroTelefonoAsesor) {
+        return entidadBancariaRepository.findByNumeroTelefonoAsesor(numeroTelefonoAsesor)
+                .stream()
+                .map(EntidadBancariaDTO::toDTO)
+                .collect(Collectors.toList());
     }
 
-    /**
-     * Elimina entidades bancarias por nombre.
-     */
     @Transactional
     public void deleteByNombre(String nombre) {
         entidadBancariaRepository.deleteByNombre(nombre);
     }
 
-    /**
-     * Elimina entidades bancarias por número de teléfono del asesor.
-     */
     @Transactional
     public void deleteByNumeroTelefonoAsesor(String numeroTelefonoAsesor) {
         entidadBancariaRepository.deleteByNumeroTelefonoAsesor(numeroTelefonoAsesor);
     }
 
-    /**
-     * Elimina una entidad bancaria por su ID usando el método personalizado.
-     */
     @Transactional
     public void deleteByIdCustom(long id) {
         entidadBancariaRepository.deleteById(id);

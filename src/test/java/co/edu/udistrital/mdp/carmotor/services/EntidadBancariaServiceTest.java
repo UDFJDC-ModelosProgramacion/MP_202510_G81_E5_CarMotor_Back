@@ -17,5 +17,6 @@ public class EntidadBancariaServiceTest {
 
     @Autowired
     private TestEntityManager entityManager;
-
+    
+    
 }

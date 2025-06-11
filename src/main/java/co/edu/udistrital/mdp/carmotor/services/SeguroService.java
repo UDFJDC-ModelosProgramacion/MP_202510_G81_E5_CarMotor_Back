@@ -1,11 +1,12 @@
 package co.edu.udistrital.mdp.carmotor.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import co.edu.udistrital.mdp.carmotor.dto.SeguroDTO;
 import co.edu.udistrital.mdp.carmotor.entities.SeguroEntity;
 import co.edu.udistrital.mdp.carmotor.repositories.SeguroRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -17,74 +18,36 @@ public class SeguroService {
     @Autowired
     private SeguroRepository seguroRepository;
 
-    /**
-     * Crea un nuevo seguro.
-     */
-    public SeguroEntity createSeguro(SeguroEntity seguro) {
-        return seguroRepository.save(seguro);
+    public SeguroDTO createSeguro(SeguroDTO dto) {
+        SeguroEntity entity = SeguroDTO.toEntity(dto);
+        return SeguroDTO.toDTO(seguroRepository.save(entity));
     }
 
-    /**
-     * Obtiene todos los seguros.
-     */
-    public List<SeguroEntity> getSeguros() {
-        return seguroRepository.findAll();
+    public List<SeguroDTO> getSeguros() {
+        return seguroRepository.findAll()
+                .stream()
+                .map(SeguroDTO::toDTO)
+                .collect(Collectors.toList());
     }
 
-    /**
-     * Obtiene un seguro por su ID.
-     */
-    public SeguroEntity getSeguro(Long id) {
+    public SeguroDTO getSeguro(Long id) {
         return seguroRepository.findById(id)
+                .map(SeguroDTO::toDTO)
                 .orElseThrow(() -> new IllegalArgumentException("Seguro no encontrado con ID: " + id));
     }
 
-    /**
-     * Actualiza los datos de un seguro.
-     */
-    public SeguroEntity updateSeguro(Long id, SeguroEntity seguro) {
-        SeguroEntity existente = getSeguro(id);
-        existente.setValorAnual(seguro.getValorAnual());
-        existente.setEntidadAseguradora(seguro.getEntidadAseguradora());
-        existente.setVehiculo(seguro.getVehiculo());
-        return seguroRepository.save(existente);
+    public SeguroDTO updateSeguro(Long id, SeguroDTO dto) {
+        SeguroEntity existente = seguroRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Seguro no encontrado con ID: " + id));
+        existente.setValorAnual(dto.getValorAnual());
+        existente.setEntidadAseguradora(dto.getEntidadAseguradora());
+        // Actualiza otros campos según tu DTO
+        return SeguroDTO.toDTO(seguroRepository.save(existente));
     }
 
-    /**
-     * Elimina un seguro por su ID.
-     */
     public void deleteSeguro(Long id) {
-        SeguroEntity seguro = getSeguro(id);
+        SeguroEntity seguro = seguroRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Seguro no encontrado con ID: " + id));
         seguroRepository.delete(seguro);
-    }
-
-    /**
-     * Busca seguros por valor anual.
-     */
-    public List<SeguroEntity> findByValorAnual(String valorAnual) {
-        return seguroRepository.findByValorAnual(valorAnual);
-    }
-
-    /**
-     * Busca seguros por entidad aseguradora.
-     */
-    public List<SeguroEntity> findByEntidadAseguradora(String entidadAseguradora) {
-        return seguroRepository.findByEntidadAseguradora(entidadAseguradora);
-    }
-
-    /**
-     * Elimina seguros por valor anual.
-     */
-    @Transactional
-    public void deleteByValorAnual(String valorAnual) {
-        seguroRepository.deleteByValorAnual(valorAnual);
-    }
-
-    /**
-     * Elimina seguros por entidad aseguradora.
-     */
-    @Transactional
-    public void deleteByEntidadAseguradora(String entidadAseguradora) {
-        seguroRepository.deleteByEntidadAseguradora(entidadAseguradora);
     }
 }

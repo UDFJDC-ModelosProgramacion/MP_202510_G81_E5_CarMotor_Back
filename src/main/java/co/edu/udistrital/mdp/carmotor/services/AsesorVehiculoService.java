@@ -1,54 +1,61 @@
 package co.edu.udistrital.mdp.carmotor.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import co.edu.udistrital.mdp.carmotor.dto.AsesorVehiculoDTO;
 import co.edu.udistrital.mdp.carmotor.entities.AsesorVehiculoEntity;
 import co.edu.udistrital.mdp.carmotor.repositories.AsesorVehiculoRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-
 public class AsesorVehiculoService {
-    
+
     @Autowired
     AsesorVehiculoRepository asesorVehiculoRepository;
 
-    // Crea un nuevo asesor.
-    // Reglas:
-    // - No puede haber otro asesor con el mismo número de contacto.
-    // - El nombre es obligatorio.
-    //
-    public AsesorVehiculoEntity createAsesor(AsesorVehiculoEntity asesor) {
-        if (asesor.getNombre() == null || asesor.getNombre().trim().isEmpty()) {
+    /**
+     * Crea un nuevo asesor.
+     * Reglas:
+     * - No puede haber otro asesor con el mismo número de contacto.
+     * - El nombre es obligatorio.
+     */
+    public AsesorVehiculoDTO createAsesor(AsesorVehiculoDTO asesorDTO) {
+        if (asesorDTO.getNombre() == null || asesorDTO.getNombre().trim().isEmpty()) {
             throw new IllegalArgumentException("El nombre del asesor es obligatorio.");
         }
 
-        if (asesor.getNumeroContacto() != null && !asesor.getNumeroContacto().trim().isEmpty()) {
-            List<AsesorVehiculoEntity> existentes = asesorVehiculoRepository.findByNumeroContacto(asesor.getNumeroContacto());
+        if (asesorDTO.getNumeroContacto() != null && !asesorDTO.getNumeroContacto().trim().isEmpty()) {
+            List<AsesorVehiculoEntity> existentes = asesorVehiculoRepository.findByNumeroContacto(asesorDTO.getNumeroContacto());
             if (!existentes.isEmpty()) {
                 throw new IllegalArgumentException("Ya existe un asesor con este número de contacto.");
             }
         }
 
-        return asesorVehiculoRepository.save(asesor);
+        AsesorVehiculoEntity entity = AsesorVehiculoDTO.toEntity(asesorDTO);
+        return AsesorVehiculoDTO.toDTO(asesorVehiculoRepository.save(entity));
     }
 
     /**
      * Obtiene todos los asesores.
      */
-    public List<AsesorVehiculoEntity> getAsesores() {
-        return asesorVehiculoRepository.findAll();
+    public List<AsesorVehiculoDTO> getAsesores() {
+        return asesorVehiculoRepository.findAll()
+                .stream()
+                .map(AsesorVehiculoDTO::toDTO)
+                .collect(Collectors.toList());
     }
 
     /**
      * Obtiene un asesor por ID.
      */
-    public AsesorVehiculoEntity getAsesor(Long id) {
+    public AsesorVehiculoDTO getAsesor(Long id) {
         return asesorVehiculoRepository.findById(id)
+                .map(AsesorVehiculoDTO::toDTO)
                 .orElseThrow(() -> new IllegalArgumentException("Asesor no encontrado con id: " + id));
     }
 
@@ -58,25 +65,26 @@ public class AsesorVehiculoService {
      * - No puede haber otro asesor con el mismo número de contacto.
      * - El nombre es obligatorio.
      */
-    public AsesorVehiculoEntity updateAsesor(Long id, AsesorVehiculoEntity asesor) {
-        AsesorVehiculoEntity existente = getAsesor(id);
+    public AsesorVehiculoDTO updateAsesor(Long id, AsesorVehiculoDTO asesorDTO) {
+        AsesorVehiculoEntity existente = asesorVehiculoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Asesor no encontrado con id: " + id));
 
-        if (asesor.getNombre() == null || asesor.getNombre().trim().isEmpty()) {
+        if (asesorDTO.getNombre() == null || asesorDTO.getNombre().trim().isEmpty()) {
             throw new IllegalArgumentException("El nombre del asesor es obligatorio.");
         }
 
-        if (asesor.getNumeroContacto() != null && !asesor.getNumeroContacto().equals(existente.getNumeroContacto())) {
-            List<AsesorVehiculoEntity> conMismoContacto = asesorVehiculoRepository.findByNumeroContacto(asesor.getNumeroContacto());
+        if (asesorDTO.getNumeroContacto() != null && !asesorDTO.getNumeroContacto().equals(existente.getNumeroContacto())) {
+            List<AsesorVehiculoEntity> conMismoContacto = asesorVehiculoRepository.findByNumeroContacto(asesorDTO.getNumeroContacto());
             if (!conMismoContacto.isEmpty()) {
                 throw new IllegalArgumentException("Ya existe un asesor con este número de contacto.");
             }
         }
 
-        existente.setNombre(asesor.getNombre());
-        existente.setNumeroContacto(asesor.getNumeroContacto());
-        existente.setSede(asesor.getSede());
+        existente.setNombre(asesorDTO.getNombre());
+        existente.setNumeroContacto(asesorDTO.getNumeroContacto());
+        // Puedes actualizar imagen y vehículos si lo deseas
 
-        return asesorVehiculoRepository.save(existente);
+        return AsesorVehiculoDTO.toDTO(asesorVehiculoRepository.save(existente));
     }
 
     /**
@@ -84,7 +92,8 @@ public class AsesorVehiculoService {
      * Regla: Solo puede borrarse si no tiene vehículos asociados.
      */
     public void deleteAsesor(Long id) {
-        AsesorVehiculoEntity asesor = getAsesor(id);
+        AsesorVehiculoEntity asesor = asesorVehiculoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Asesor no encontrado con id: " + id));
         if (asesor.getVehiculos() != null && !asesor.getVehiculos().isEmpty()) {
             throw new IllegalStateException("No se puede eliminar el asesor porque tiene vehículos asociados.");
         }
